@@ -34,6 +34,10 @@ app.get("/RegisterForm.html", (req, res) => {
   res.sendFile(path.join(__dirname, "static", "RegisterForm.html"));
 });
 
+app.get("/SearchForm.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "static", "SearchForm.html"));
+});
+
 app.listen(parseInt(options.port), options.host, () => {
   console.log(`Server running at http://${options.host}:${options.port}/`);
 });
