@@ -2,6 +2,7 @@ const { Command } = require("commander");
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
+const multer = require("multer");
 
 const program = new Command();
 
@@ -30,12 +31,43 @@ if (!fs.existsSync(options.cache)) {
 
 const app = express();
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, options.cache);
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  }
+});
+const upload = multer({ storage: storage });
+
+let inventory = [];
+
 app.get("/RegisterForm.html", (req, res) => {
   res.sendFile(path.join(__dirname, "static", "RegisterForm.html"));
 });
 
 app.get("/SearchForm.html", (req, res) => {
   res.sendFile(path.join(__dirname, "static", "SearchForm.html"));
+});
+
+app.post("/register", upload.single("photo"), (req, res) => {
+  const { inventory_name, description } = req.body;
+
+  if (!inventory_name) {
+    return res.status(400).send("Bad Request: Inventory Name is required");
+  }
+
+  const newItem = {
+    id: (inventory.length + 1).toString(),
+    name: inventory_name,
+    description: description || "",
+    photo: req.file ? req.file.filename : null 
+  };
+
+  inventory.push(newItem);
+
+  res.status(201).json(newItem);
 });
 
 app.listen(parseInt(options.port), options.host, () => {
