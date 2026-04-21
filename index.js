@@ -1,6 +1,7 @@
 const { Command } = require("commander");
-const http = require("http");
+const express = require("express");
 const fs = require("fs");
+const path = require("path");
 
 const program = new Command();
 
@@ -27,11 +28,12 @@ if (!fs.existsSync(options.cache)) {
   fs.mkdirSync(options.cache, { recursive: true });
 }
 
-const server = http.createServer((req, res) => {
-  res.writeHead(200);
-  res.end("Inventory Service is running");
+const app = express();
+
+app.get("/RegisterForm.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "static", "RegisterForm.html"));
 });
 
-server.listen(parseInt(options.port), options.host, () => {
+app.listen(parseInt(options.port), options.host, () => {
   console.log(`Server running at http://${options.host}:${options.port}/`);
 });
