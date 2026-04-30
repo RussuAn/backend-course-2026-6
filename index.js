@@ -33,6 +33,7 @@ if (!fs.existsSync(options.cache)) {
 
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -175,6 +176,28 @@ app.put("/inventory/:id/photo", upload.single("photo"), (req, res) => {
   } else {
     res.status(400).send("Bad Request: No photo uploaded");
   }
+});
+
+app.post("/search", (req, res) => {
+  const { id, has_photo } = req.body;
+
+  const item = inventory.find(i => i.id === id);
+
+  if (!item) {
+    return res.status(404).send("Not found: Item with this ID does not exist");
+  }
+
+  const response = {
+    id: item.id,
+    inventory_name: item.name,
+    description: item.description,
+  };
+
+  if (has_photo === "on" || has_photo === true) {
+    response.photo_url = item.photo ? `http://${options.host}:${options.port}/inventory/${item.id}/photo` : null;
+  }
+
+  res.status(200).json(response);
 });
 
 app.delete("/inventory/:id", (req, res) => {
