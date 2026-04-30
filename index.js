@@ -177,6 +177,28 @@ app.put("/inventory/:id/photo", upload.single("photo"), (req, res) => {
   }
 });
 
+app.delete("/inventory/:id", (req, res) => {
+  const { id } = req.params;
+  const itemIndex = inventory.findIndex(i => i.id === id);
+
+  if (itemIndex === -1) {
+    return res.status(404).send("Not found: Item with this ID does not exist");
+  }
+
+  const item = inventory[itemIndex];
+
+  if (item.photo) {
+    const photoPath = path.resolve(options.cache, item.photo);
+    if (fs.existsSync(photoPath)) {
+      fs.unlinkSync(photoPath);
+    }
+  }
+
+  inventory.splice(itemIndex, 1);
+
+  res.status(200).end();
+});
+
 const server = http.createServer(app);
 server.listen(parseInt(options.port), options.host, () => {
   console.log(`Server running at http://${options.host}:${options.port}/`);
