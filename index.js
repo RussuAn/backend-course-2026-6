@@ -81,6 +81,24 @@ app.get("/inventory", (req, res) => {
   res.status(200).json(inventoryWithLinks);
 });
 
+app.get("/inventory/:id", (req, res) => {
+  const { id } = req.params;
+  const item = inventory.find(i => i.id === id);
+
+  if (!item) {
+    return res.status(404).send("Not found: Item with this ID does not exist");
+  }
+
+  const response = {
+    id: item.id,
+    inventory_name: item.name,
+    description: item.description,
+    photo_url: item.photo ? `http://${options.host}:${options.port}/inventory/${item.id}/photo` : null
+  };
+
+  res.status(200).json(response);
+});
+
 app.listen(parseInt(options.port), options.host, () => {
   console.log(`Server running at http://${options.host}:${options.port}/`);
 });
