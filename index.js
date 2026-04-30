@@ -5,6 +5,8 @@ const fsPromises = require("fs/promises");
 const path = require("path");
 const multer = require("multer");
 const http = require("http");
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json");
 
 const program = new Command();
 
@@ -227,6 +229,8 @@ app.delete("/inventory/:id", async (req, res) => {
 
   res.status(200).end();
 });
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use((req, res) => {
   res.status(405).send("Method Not Allowed");

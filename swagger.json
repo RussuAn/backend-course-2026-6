@@ -1,0 +1,106 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Inventory Service API",
+    "version": "1.0.0",
+    "description": "Документація API для сервісу інвентаризації (Лабораторна робота №6)"
+  },
+  "servers": [
+    {
+      "url": "[http://127.0.0.1:8000](http://127.0.0.1:8000)",
+      "description": "Локальний сервер"
+    }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "summary": "Реєстрація нового пристрою",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "inventory_name": { "type": "string" },
+                  "description": { "type": "string" },
+                  "photo": { "type": "string", "format": "binary" }
+                },
+                "required": ["inventory_name"]
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "Created" }, "400": { "description": "Bad Request" } }
+      }
+    },
+    "/inventory": {
+      "get": {
+        "summary": "Список всіх речей",
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/inventory/{id}": {
+      "get": {
+        "summary": "Інформація про річ за ID",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "OK" }, "404": { "description": "Not Found" } }
+      },
+      "put": {
+        "summary": "Оновлення даних речі",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "type": "object", "properties": { "inventory_name": { "type": "string" }, "description": { "type": "string" } } }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" }, "404": { "description": "Not Found" } }
+      },
+      "delete": {
+        "summary": "Видалення речі",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "OK" }, "404": { "description": "Not Found" } }
+      }
+    },
+    "/inventory/{id}/photo": {
+      "get": {
+        "summary": "Отримання фото",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "OK" }, "404": { "description": "Not Found" } }
+      },
+      "put": {
+        "summary": "Оновлення фото",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": { "type": "object", "properties": { "photo": { "type": "string", "format": "binary" } } }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" }, "404": { "description": "Not Found" } }
+      }
+    },
+    "/search": {
+      "post": {
+        "summary": "Пошук за ID (x-www-form-urlencoded)",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "string" },
+                  "has_photo": { "type": "string" }
+                },
+                "required": ["id"]
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "OK" }, "404": { "description": "Not Found" } }
+      }
+    }
+  }
+}
