@@ -1,8 +1,10 @@
 const { Command } = require("commander");
 const express = require("express");
 const fs = require("fs");
+const fsPromises = require("fs/promises");
 const path = require("path");
 const multer = require("multer");
+const http = require("http");
 
 const program = new Command();
 
@@ -100,6 +102,32 @@ app.get("/inventory/:id", (req, res) => {
   res.status(200).json(response);
 });
 
+app.get("/inventory/:id/photo", async (req, res) => {
+  const { id } = req.params;
+  const item = inventory.find(i => i.id === id);
+
+  if (!item || !item.photo) {
+    return res.status(404).send("Not found: Photo or item does not exist");
+  }
+
+  const photoPath = path.resolve(options.cache, item.photo);
+
+  try {
+    await fsPromises.access(photoPath);
+    
+    res.setHeader("Content-Type", "image/jpeg");
+    res.sendFile(photoPath, (err) => {
+      if (err) {
+        if (!res.headersSent) {
+          res.status(404).send("File missing during transfer");
+        }
+      }
+    });
+  } catch (err) {
+    res.status(404).send("Not found: File missing in cache");
+  }
+});
+
 app.put("/inventory/:id", (req, res) => {
   const { id } = req.params;
   const { inventory_name, description } = req.body;
@@ -120,6 +148,7 @@ app.put("/inventory/:id", (req, res) => {
   res.status(200).end();
 });
 
-app.listen(parseInt(options.port), options.host, () => {
+const server = http.createServer(app);
+server.listen(parseInt(options.port), options.host, () => {
   console.log(`Server running at http://${options.host}:${options.port}/`);
 });
