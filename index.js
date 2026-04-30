@@ -70,6 +70,17 @@ app.post("/register", upload.single("photo"), (req, res) => {
   res.status(201).json(newItem);
 });
 
+app.get("/inventory", (req, res) => {
+  const inventoryWithLinks = inventory.map(item => ({
+    id: item.id,
+    inventory_name: item.name,
+    description: item.description,
+    photo_url: item.photo ? `http://${options.host}:${options.port}/inventory/${item.id}/photo` : null
+  }));
+
+  res.status(200).json(inventoryWithLinks);
+});
+
 app.listen(parseInt(options.port), options.host, () => {
   console.log(`Server running at http://${options.host}:${options.port}/`);
 });
