@@ -148,6 +148,35 @@ app.put("/inventory/:id", (req, res) => {
   res.status(200).end();
 });
 
+app.put("/inventory/:id/photo", upload.single("photo"), (req, res) => {
+  const { id } = req.params;
+  const item = inventory.find(i => i.id === id);
+
+  if (!item) {
+    if (req.file) {
+      const uploadedFilePath = path.resolve(options.cache, req.file.filename);
+      if (fs.existsSync(uploadedFilePath)) {
+        fs.unlinkSync(uploadedFilePath);
+      }
+    }
+    return res.status(404).send("Not found: Item does not exist");
+  }
+
+  if (req.file) {
+    if (item.photo) {
+      const oldPhotoPath = path.resolve(options.cache, item.photo);
+      if (fs.existsSync(oldPhotoPath)) {
+        fs.unlinkSync(oldPhotoPath);
+      }
+    }
+
+    item.photo = req.file.filename;
+    res.status(200).end();
+  } else {
+    res.status(400).send("Bad Request: No photo uploaded");
+  }
+});
+
 const server = http.createServer(app);
 server.listen(parseInt(options.port), options.host, () => {
   console.log(`Server running at http://${options.host}:${options.port}/`);
