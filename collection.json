@@ -1,0 +1,266 @@
+{
+  "info": {
+    "_postman_id": "75e7806b-04da-4966-9e22-4551c96fee85",
+    "name": "Inventory Service API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "54428410",
+    "_collection_link": "https://go.postman.co/collection/54428410-75e7806b-04da-4966-9e22-4551c96fee85?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "POST /register",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "inventory_name",
+              "value": "Gaming Laptop",
+              "type": "text",
+              "uuid": "523ea627-c437-403e-9e4b-9a95947b11e3"
+            },
+            {
+              "key": "description",
+              "value": "Powerful laptop with 32GB RAM",
+              "type": "text",
+              "uuid": "66d94531-2049-414e-afe6-0781a7df3c67"
+            },
+            {
+              "key": "photo",
+              "type": "file",
+              "uuid": "8a777f6c-d1b8-40e0-9a4a-8c748ca3f147",
+              "src": "postman-cloud:///1f14476d-6fc3-4a80-8bdc-96ba20598ded"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/register",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "POST /search",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "id",
+              "value": "1",
+              "type": "text",
+              "uuid": "41adefa7-5e71-4618-b997-0cfeeb10f5b3"
+            },
+            {
+              "key": "has_photo",
+              "value": "on",
+              "type": "text",
+              "uuid": "e13bc419-e305-470c-89cc-95a80b5d8f02"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/search",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "search"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET /inventory",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/inventory",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "inventory"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET /inventory/:id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/inventory/1",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "inventory",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GET /inventory/:id/photo",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/inventory/1/photo",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "inventory",
+            "1",
+            "photo"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PUT /inventory/:id",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"inventory_name\": \"Pro Gaming Laptop\",\r\n  \"description\": \"Updated specifications with 64GB RAM\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/inventory/1",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "inventory",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PUT inventory/:id/photo",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "photo",
+              "type": "file",
+              "uuid": "67579aa5-705a-4a45-b44b-a07a6e08d3a4",
+              "src": "postman-cloud:///1f14476d-6fc3-4a80-8bdc-96ba20598ded"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://127.0.0.1:8000/inventory/1/photo",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "inventory",
+            "1",
+            "photo"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DELETE inventory/:id",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:8000/inventory/1",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "8000",
+          "path": [
+            "inventory",
+            "3"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
