@@ -30,6 +30,7 @@ if (!fs.existsSync(options.cache)) {
 }
 
 const app = express();
+app.use(express.json());
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -67,7 +68,7 @@ app.post("/register", upload.single("photo"), (req, res) => {
 
   inventory.push(newItem);
 
-  res.status(201).json(newItem);
+  res.status(201).end();
 });
 
 app.get("/inventory", (req, res) => {
@@ -97,6 +98,26 @@ app.get("/inventory/:id", (req, res) => {
   };
 
   res.status(200).json(response);
+});
+
+app.put("/inventory/:id", (req, res) => {
+  const { id } = req.params;
+  const { inventory_name, description } = req.body;
+
+  const item = inventory.find(i => i.id === id);
+
+  if (!item) {
+    return res.status(404).send("Not found: Item with this ID does not exist");
+  }
+
+  if (inventory_name) {
+    item.name = inventory_name;
+  }
+  if (description !== undefined) {
+    item.description = description;
+  }
+
+  res.status(200).end();
 });
 
 app.listen(parseInt(options.port), options.host, () => {
