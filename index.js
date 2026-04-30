@@ -71,7 +71,7 @@ app.post("/register", upload.single("photo"), (req, res) => {
 
   inventory.push(newItem);
 
-  res.status(201).end();
+  res.status(201).send("Item successfully registered!");
 });
 
 app.get("/inventory", (req, res) => {
@@ -146,18 +146,20 @@ app.put("/inventory/:id", (req, res) => {
     item.description = description;
   }
 
-  res.status(200).end();
+  res.status(200).send("Item successfully updated!");
 });
 
-app.put("/inventory/:id/photo", upload.single("photo"), (req, res) => {
+app.put("/inventory/:id/photo", upload.single("photo"), async (req, res) => {
   const { id } = req.params;
   const item = inventory.find(i => i.id === id);
 
   if (!item) {
     if (req.file) {
       const uploadedFilePath = path.resolve(options.cache, req.file.filename);
-      if (fs.existsSync(uploadedFilePath)) {
-        fs.unlinkSync(uploadedFilePath);
+      try {
+        await fsPromises.access(uploadedFilePath);
+        await fsPromises.unlink(uploadedFilePath);
+      } catch (err) {
       }
     }
     return res.status(404).send("Not found: Item does not exist");
@@ -166,13 +168,15 @@ app.put("/inventory/:id/photo", upload.single("photo"), (req, res) => {
   if (req.file) {
     if (item.photo) {
       const oldPhotoPath = path.resolve(options.cache, item.photo);
-      if (fs.existsSync(oldPhotoPath)) {
-        fs.unlinkSync(oldPhotoPath);
+      try {
+        await fsPromises.access(oldPhotoPath);
+        await fsPromises.unlink(oldPhotoPath);
+      } catch (err) {
       }
     }
 
     item.photo = req.file.filename;
-    res.status(200).end();
+    res.status(200).send("Item's photo successfully updated!");
   } else {
     res.status(400).send("Bad Request: No photo uploaded");
   }
@@ -200,7 +204,7 @@ app.post("/search", (req, res) => {
   res.status(200).json(response);
 });
 
-app.delete("/inventory/:id", (req, res) => {
+app.delete("/inventory/:id", async (req, res) => {
   const { id } = req.params;
   const itemIndex = inventory.findIndex(i => i.id === id);
 
@@ -212,14 +216,20 @@ app.delete("/inventory/:id", (req, res) => {
 
   if (item.photo) {
     const photoPath = path.resolve(options.cache, item.photo);
-    if (fs.existsSync(photoPath)) {
-      fs.unlinkSync(photoPath);
+    try {
+      await fsPromises.access(photoPath);
+      await fsPromises.unlink(photoPath);
+    } catch (err) {
     }
   }
 
   inventory.splice(itemIndex, 1);
 
   res.status(200).end();
+});
+
+app.use((req, res) => {
+  res.status(405).send("Method Not Allowed");
 });
 
 const server = http.createServer(app);
